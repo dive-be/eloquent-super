@@ -10,7 +10,7 @@ trait InheritsFromSuper
 {
     protected function initializeInheritsFromSuper()
     {
-        $this->with[] = config('eloquent-super.relationship');
+        $this->with[] = 'super';
     }
 
     public function super(): MorphOne
@@ -24,7 +24,7 @@ trait InheritsFromSuper
     public function delete()
     {
         return DB::transaction(fn () => parent::delete()
-            && $this->getRelationValue(config('eloquent-super.relationship'))->delete());
+            && $this->getRelationValue('super')->delete());
     }
 
     public function fill(array $attributes)
@@ -32,7 +32,7 @@ trait InheritsFromSuper
         [$super, $sub] = $this->partitionAttributes($attributes);
 
         parent::fill($sub);
-        $this->getRelationValue(config('eloquent-super.relationship'))->fill($super);
+        $this->getRelationValue('super')->fill($super);
 
         return $this;
     }
@@ -40,7 +40,7 @@ trait InheritsFromSuper
     public function save(array $options = [])
     {
         return DB::transaction(fn () => parent::save($options)
-            && $this->getRelationValue(config('eloquent-super.relationship'))
+            && $this->getRelationValue('super')
                 ->setAttribute($this->super()->getForeignKeyName(), $this->getKey())
                 ->save($options));
     }
@@ -50,13 +50,13 @@ trait InheritsFromSuper
         [$super, $sub] = $this->partitionAttributes($attributes);
 
         return DB::transaction(fn () => parent::update($sub, $options)
-            && $this->getRelationValue(config('eloquent-super.relationship'))->update($super, $options));
+            && $this->getRelationValue('super')->update($super, $options));
     }
 
     public function setCreatedAt($value)
     {
         $this->setAttribute($column = $this->getCreatedAtColumn(), $value);
-        $this->getRelationValue(config('eloquent-super.relationship'))->setAttribute($column, $value);
+        $this->getRelationValue('super')->setAttribute($column, $value);
 
         return $this;
     }
@@ -64,7 +64,7 @@ trait InheritsFromSuper
     public function setUpdatedAt($value)
     {
         $this->setAttribute($column = $this->getUpdatedAtColumn(), $value);
-        $this->getRelationValue(config('eloquent-super.relationship'))->setAttribute($column, $value);
+        $this->getRelationValue('super')->setAttribute($column, $value);
 
         return $this;
     }
@@ -87,7 +87,7 @@ trait InheritsFromSuper
 
     public function __call($method, $parameters)
     {
-        if (! method_exists($super = $this->getRelationValue(config('eloquent-super.relationship')), $method)) {
+        if (! method_exists($super = $this->getRelationValue('super'), $method)) {
             return parent::__call($method, $parameters);
         }
 
@@ -100,17 +100,17 @@ trait InheritsFromSuper
             return $value;
         }
 
-        if (! $this->relationLoaded(config('eloquent-super.relationship'))) {
+        if (! $this->relationLoaded('super')) {
             return $value;
         }
 
-        return $this->getRelationValue(config('eloquent-super.relationship'))->__get($key);
+        return $this->getRelationValue('super')->__get($key);
     }
 
     public function __set($key, $value)
     {
         if ($this->newSuper()->isFillable($key)) {
-            $this->getRelationValue(config('eloquent-super.relationship'))->__set($key, $value);
+            $this->getRelationValue('super')->__set($key, $value);
         } else {
             parent::__set($key, $value);
         }

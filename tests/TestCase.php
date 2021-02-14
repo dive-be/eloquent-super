@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Dive\EloquentSuper\EloquentSuperServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -13,16 +12,6 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->setUpDatabase($this->app);
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['config']->set('eloquent-super.relationship', 'super');
-    }
-
-    protected function getPackageProviders($app)
-    {
-        return [EloquentSuperServiceProvider::class];
     }
 
     protected function setUpDatabase($app)

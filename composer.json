@@ -51,12 +51,5 @@
     },
     "config": {
         "sort-packages": true
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Dive\\EloquentSuper\\EloquentSuperServiceProvider"
-            ]
-        }
     }
 }
