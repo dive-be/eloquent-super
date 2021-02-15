@@ -1,9 +1,9 @@
 # Eloquent Super
-Lightweight MTI (Multi Table Inheritance) support for Eloquent models.
+Lightweight MTI (Multiple Table Inheritance) support for Eloquent models.
 
 ⚠️ Minor releases of this package may cause breaking changes as it has no stable release yet.
 
-## What is "Multi Table Inheritance"?
+## What is "Multiple Table Inheritance"?
 
 MTI allows one to have separate database tables for each "sub class" that shares a common "super class".
 
@@ -95,9 +95,9 @@ Actually, it solves absolutely **nothing**. "Why this package, then?" you may as
 
 ### Long answer
 
-You see, Eloquent already gives us the ability to define polymorphic relationships. The only thing you need to start leveraging MTI capabilities in Eloquent is a `MorphOne` relationship, that's it. This package adds a nice DX layer on top of the existing functionality, so it is a tad nicer to work with these kind of tightly coupled relationships. So, the "meat and potatoes" of this package is **delegating calls** to the defined `super` relationship (and a couple more things). There is no real "parent" class in an object oriented sense.
+You see, Eloquent already gives us the ability to define polymorphic relationships. The only thing you need to start leveraging MTI capabilities in Eloquent is a `MorphOne` relationship. This package adds a nice DX layer on top of the existing functionality, so it is a tad nicer to work with these kind of tightly coupled relationships. 
 
-It is a conscious decision to not sprinkle too much magic on the models.
+So, the "meat and potatoes" of this package is **delegating calls** to the defined `super` relationship (and a couple more things). There is no real "parent" class in an object oriented sense. It is a conscious decision to not sprinkle too much magic on the models.
 
 ### Capabilities
 
