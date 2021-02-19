@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use function Pest\Laravel\assertDatabaseCount;
+use Tests\Fakes\SoftModel;
 use Tests\Fakes\SubModel;
 
 test('super is automatically destroyed if sub initiates a destructive operation', function () {
@@ -15,4 +16,18 @@ test('super is automatically destroyed if sub initiates a destructive operation'
 
     assertDatabaseCount($super, 0);
     assertDatabaseCount($sub, 0);
+});
+
+test('sub model is soft deleted and super model is left alone', function () {
+    seedSoftDeletes();
+
+    $sub = SoftModel::query()->first();
+
+    expect($sub->trashed())->toBeFalse();
+
+    $sub->delete();
+    $sub->refresh();
+
+    expect($sub->trashed())->toBeTrue();
+    expect($sub->super->exists)->toBeTrue();
 });

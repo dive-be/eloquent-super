@@ -32,5 +32,13 @@ abstract class TestCase extends BaseTestCase
             $table->string('email');
             $table->timestamps();
         });
+
+        $schema->create('test_models_soft', static function (Blueprint $table) {
+            $table->id();
+            $table->string('gender');
+            $table->string('email');
+            $table->softDeletes();
+            $table->timestamps();
+        });
     }
 }

@@ -23,6 +23,10 @@ trait InheritsFromSuper
 
     public function delete()
     {
+        if ($this->usesSoftDeletes()) {
+            return parent::delete();
+        }
+
         return DB::transaction(fn () => parent::delete()
             && $this->getRelationValue('super')->delete());
     }
@@ -55,21 +59,26 @@ trait InheritsFromSuper
 
     public function setCreatedAt($value)
     {
-        $this->setAttribute($column = $this->getCreatedAtColumn(), $value);
-        $this->getRelationValue('super')->setAttribute($column, $value);
+        parent::setCreatedAt($value);
+        $this->getRelationValue('super')->setCreatedAt($value);
 
         return $this;
     }
 
     public function setUpdatedAt($value)
     {
-        $this->setAttribute($column = $this->getUpdatedAtColumn(), $value);
-        $this->getRelationValue('super')->setAttribute($column, $value);
+        parent::setUpdatedAt($value);
+        $this->getRelationValue('super')->setUpdatedAt($value);
 
         return $this;
     }
 
     abstract protected function getSuperClass(): string;
+
+    private function usesSoftDeletes(): bool
+    {
+        return method_exists($this, 'runSoftDelete');
+    }
 
     private function partitionAttributes(array $attributes): array
     {
