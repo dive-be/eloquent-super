@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use function Pest\Laravel\assertDatabaseCount;
 use Tests\Fakes\SoftModel;
 use Tests\Fakes\SubModel;
+use function Pest\Laravel\assertDatabaseCount;
 
 test('super is automatically destroyed if sub initiates a destructive operation', function () {
     seed();

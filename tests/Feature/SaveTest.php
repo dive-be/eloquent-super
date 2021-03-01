@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use function Pest\Laravel\assertDatabaseHas;
 use Tests\Fakes\SubModel;
+use function Pest\Laravel\assertDatabaseHas;
 
 test('attributes are saved in the right tables', function () {
     $model = new SubModel(array_merge(

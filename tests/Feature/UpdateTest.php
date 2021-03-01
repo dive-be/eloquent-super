@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use function Pest\Laravel\assertDatabaseHas;
 use Tests\Fakes\SubModel;
+use function Pest\Laravel\assertDatabaseHas;
 
 test('attributes are updated in the right tables', function () {
     seed();
