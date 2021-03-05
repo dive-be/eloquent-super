@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests;
 
 use Tests\Fakes\SoftModel;
 use Tests\Fakes\SubModel;

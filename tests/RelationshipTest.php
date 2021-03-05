@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Tests\Fakes\SubModel;

@@ -3,7 +3,7 @@
 use Tests\Fakes\SoftModel;
 use Tests\Fakes\SubModel;
 
-uses(Tests\TestCase::class)->in('Feature');
+uses(Tests\TestCase::class)->in(__DIR__);
 
 function seed()
 {

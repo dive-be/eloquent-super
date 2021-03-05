@@ -27,8 +27,7 @@ trait InheritsFromSuper
             return parent::delete();
         }
 
-        return DB::transaction(fn () => parent::delete()
-            && $this->getRelationValue('super')->delete());
+        return DB::transaction(fn () => $this->getRelationValue('super')->delete() && parent::delete());
     }
 
     public function fill(array $attributes)
@@ -43,18 +42,19 @@ trait InheritsFromSuper
 
     public function save(array $options = [])
     {
-        return DB::transaction(fn () => parent::save($options)
-            && $this->getRelationValue('super')
-                ->setAttribute($this->super()->getForeignKeyName(), $this->getKey())
-                ->save($options));
+        return DB::transaction(fn () => parent::save($options) && $this
+            ->getRelationValue('super')
+            ->setAttribute($this->super()->getForeignKeyName(), $this->getKey())
+            ->save($options));
     }
 
     public function update(array $attributes = [], array $options = [])
     {
         [$super, $sub] = $this->partitionAttributes($attributes);
 
-        return DB::transaction(fn () => parent::update($sub, $options)
-            && $this->getRelationValue('super')->update($super, $options));
+        return DB::transaction(fn () => $this
+            ->getRelationValue('super')
+            ->update($super, $options) && parent::update($sub, $options));
     }
 
     public function setCreatedAt($value)
