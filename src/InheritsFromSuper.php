@@ -59,7 +59,7 @@ trait InheritsFromSuper
 
     public function setCreatedAt($value)
     {
-        parent::setCreatedAt($value);
+        $this->setAttribute($this->getCreatedAtColumn(), $value);
         $this->getRelationValue('super')->setCreatedAt($value);
 
         return $this;
@@ -67,7 +67,7 @@ trait InheritsFromSuper
 
     public function setUpdatedAt($value)
     {
-        parent::setUpdatedAt($value);
+        $this->setAttribute($this->getUpdatedAtColumn(), $value);
         $this->getRelationValue('super')->setUpdatedAt($value);
 
         return $this;
