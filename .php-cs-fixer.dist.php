@@ -1,6 +1,6 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()
+$finder = Symfony\Component\Finder\Finder::create()
     ->exclude('vendor')
     ->name('*.php')
     ->in([
@@ -11,6 +11,9 @@ $finder = PhpCsFixer\Finder::create()
     ->ignoreVCS(true);
 
 $dive = [
+    'binary_operator_spaces' => [
+        'operators' => ['|' => null],
+    ],
     'blank_line_before_statement' => [
         'statements' => [
             'continue',
@@ -20,10 +23,10 @@ $dive = [
             'try',
         ],
     ],
-    'braces' => null,
+    'braces' => false,
+    'constant_case' => ['case' => 'lower'],
     'increment_style' => ['style' => 'post'],
     'is_null' => false,
-    'lowercase_constants' => true,
     'method_argument_space' => [
         'on_multiline' => 'ensure_fully_multiline',
         'keep_multiple_spaces_after_comma' => true,
@@ -37,8 +40,9 @@ $dive = [
         'sort_algorithm' => 'alpha',
     ],
     'phpdoc_to_comment' => false,
-    'trailing_comma_in_multiline_array' => true,
-    'yoda_style' => null,
+    'single_line_throw' => false,
+    'trailing_comma_in_multiline' => true,
+    'yoda_style' => false,
 ];
 
 return (new PhpCsFixer\Config())
