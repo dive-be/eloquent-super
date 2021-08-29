@@ -45,8 +45,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "analyse": "vendor/bin/phpstan analyse",
         "format": "vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php --allow-risky=yes",
+        "static": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest"
     },
     "config": {
