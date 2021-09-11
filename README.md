@@ -1,9 +1,11 @@
-# Eloquent Super
+# 🦸🏼‍♂️ - Eloquent Super
 Lightweight MTI (Multiple Table Inheritance) support for Eloquent models.
 
-⚠️ Minor releases of this package may cause breaking changes as it has no stable release yet.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/dive-be/eloquent-super.svg?style=flat-square)](https://packagist.org/packages/dive-be/eloquent-super)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Total Downloads](https://img.shields.io/packagist/dt/dive-be/eloquent-super.svg?style=flat-square)](https://packagist.org/packages/dive-be/eloquent-super)
 
-## What is "Multiple Table Inheritance"?
+## What is "Multiple Table Inheritance" exactly?
 
 MTI allows one to have separate database tables for each "sub class" that shares a common "super class".
 
@@ -13,6 +15,18 @@ Well, it depends. If the **only** thing you'd like to do is adding specific beha
 
 However, if the sub types have very different data fields, then MTI is the better tool. Using STI in this case will cause the table in question to have **a lot** of `NULL` columns.
 
+## What problem does this package solve?
+
+### Short answer
+
+As a matter of fact, it solves absolutely **nothing**. "Why this package, then?" you may ask. Well, read on.
+
+### Long answer
+
+You see, Eloquent already gives us the ability to define polymorphic relationships. The only thing you need to start leveraging MTI capabilities in Eloquent is a `MorphOne` relationship. This package adds a nice DX layer on top of the existing functionality, so it is a tad nicer to work with these kind of tightly coupled relationships. 
+
+So, the "meat and potatoes" of this package is **delegating calls** to the defined `super` relationship (and a couple more things). There is no real "parent" class in an object oriented sense. It is a conscious decision to not sprinkle too much magic on the models.
+
 ## Installation
 
 ```shell
@@ -21,7 +35,7 @@ composer require dive-be/eloquent-super
 
 ## Usage
 
-### Super / parent class
+### Super / parent class 👱🏻‍♂️
 
 #### Migrations
 
@@ -39,7 +53,7 @@ Schema::create('addresses', static function (Blueprint $table) {
 
 #### Class definition
 
-The super class **must** define a fillable array in order to determine which attributes belong to which database tables.
+The super class **must** define a fillable array in order to determine which attributes belong to which database tables. Without it, there is no way to distinguish the super's columns from the sub's columns.
 
 ```php
 class Address extends Model
@@ -53,7 +67,7 @@ class Address extends Model
 }
 ```
 
-### Sub classes
+### Sub / child classes 👶🏼
 
 It is not mandatory for the sub classes to define a fillable array. Setting `$guarded` to an empty array is perfectly fine as well.
 
@@ -87,21 +101,9 @@ class InvoiceAddress extends Model
 }
 ```
 
-## What problem does this package solve?
+## Capabilities 💪
 
-### Short answer
-
-Actually, it solves absolutely **nothing**. "Why this package, then?" you may ask. Well, read on.
-
-### Long answer
-
-You see, Eloquent already gives us the ability to define polymorphic relationships. The only thing you need to start leveraging MTI capabilities in Eloquent is a `MorphOne` relationship. This package adds a nice DX layer on top of the existing functionality, so it is a tad nicer to work with these kind of tightly coupled relationships. 
-
-So, the "meat and potatoes" of this package is **delegating calls** to the defined `super` relationship (and a couple more things). There is no real "parent" class in an object oriented sense. It is a conscious decision to not sprinkle too much magic on the models.
-
-### Capabilities
-
-Automatic partitioning of data when creating/saving/updating a sub model
+### Partitioning of data when saving a sub model
 
 ```php
 $address = ShippingAddress::create($request->validated());
@@ -110,29 +112,45 @@ $address->getAttributes(); // 'email', 'phone', 'contact_person', 'is_expedited'
 $address->super->getAttributes(); // 'city', 'country_id', 'street', 'postal_code'
 ```
 
-Automatically retrieving attributes from the super model
+### Attribute / relationship retrieval from super model
 
 ```php
 $address->city; // Ghent
 $address->super->city; // Ghent
+
+$address->country; // App\Models\Country { #2981 }
+$address->super->country; // App\Models\Country { #2981 }
 ```
 
-Automatically retrieving relationships from the super model
-
-```php
-$address->country; // Belgium
-$address->super->country; // Belgium
-```
-
-Automatically deleting the super model along with the sub model
+### Deleting the super along with the sub model
 
 ```php
 $address->delete(); // Database transaction in the background
 ```
 
-## A note on always eager loading the "super" relationship
+> Note: only the sub model will be trashed if both the super and sub use the "SoftDeletes" trait
+
+## A note on always eager loading the "super" relationship 📣
 
 It does not make sense for the sub model to exist without its complementary data from the super model. By having two tables, we are able to achieve a normalized database, but in code, it only makes sense when they coexist as a whole. 
+
+## Testing
+
+```bash
+composer test
+```
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Security
+
+If you discover any security related issues, please email oss@dive.be instead of using the issue tracker.
 
 ## Credits
 
