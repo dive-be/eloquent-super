@@ -1,6 +1,6 @@
 {
     "name": "dive-be/eloquent-super",
-    "description": "Lightweight MTI (Multi Table Inheritance) support for Eloquent models",
+    "description": "Lightweight MTI (Multi-Table Inheritance) support for Eloquent models",
     "keywords": [
         "dive",
         "eloquent-super",
@@ -20,16 +20,16 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "illuminate/database": "^8.0",
-        "illuminate/support": "^8.0"
+        "php": "^8.1",
+        "illuminate/database": "^9.0",
+        "illuminate/support": "^9.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "nunomaduro/larastan": "^0.7",
-        "orchestra/testbench":"^6.20",
-        "pestphp/pest": "^1.17",
-        "pestphp/pest-plugin-laravel": "^1.1",
+        "friendsofphp/php-cs-fixer": "^3.6",
+        "nunomaduro/larastan": "^2.0",
+        "orchestra/testbench":"^7.0",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-laravel": "^1.2",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {
@@ -50,6 +50,9 @@
         "test": "vendor/bin/pest"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
