@@ -2,12 +2,15 @@
 
 namespace Dive\EloquentSuper;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 trait InheritsFromSuper
 {
+    abstract protected function getSuperClass(): string;
+
     protected function initializeInheritsFromSuper()
     {
         $this->with[] = 'super';
@@ -15,10 +18,7 @@ trait InheritsFromSuper
 
     public function super(): MorphOne
     {
-        return $this->morphOne(
-            $this->getSuperClass(),
-            Str::snake(class_basename($this->getSuperClass())).'able'
-        )->withDefault();
+        return $this->morphOne($this->getSuperClass(), $this->superName())->withDefault();
     }
 
     public function delete()
@@ -27,7 +27,9 @@ trait InheritsFromSuper
             return parent::delete();
         }
 
-        return DB::transaction(fn () => $this->getRelationValue('super')->delete() && parent::delete());
+        return $this->getConnection()->transaction(function () {
+            return $this->getRelationValue('super')->delete() && parent::delete();
+        });
     }
 
     public function fill(array $attributes)
@@ -42,19 +44,23 @@ trait InheritsFromSuper
 
     public function save(array $options = [])
     {
-        return DB::transaction(fn () => parent::save($options) && $this
-            ->getRelationValue('super')
-            ->setAttribute($this->super()->getForeignKeyName(), $this->getKey())
-            ->save($options));
+        return $this->getConnection()->transaction(function () use ($options) {
+            parent::save($options);
+
+            return $this
+                ->getRelationValue('super')
+                ->setAttribute($this->super()->getForeignKeyName(), $this->getKey())
+                ->save($options);
+        });
     }
 
     public function update(array $attributes = [], array $options = [])
     {
         [$super, $sub] = $this->partitionAttributes($attributes);
 
-        return DB::transaction(fn () => $this
-            ->getRelationValue('super')
-            ->update($super, $options) && parent::update($sub, $options));
+        return $this->getConnection()->transaction(function () use ($super, $sub, $options) {
+            $this->getRelationValue('super')->update($super, $options) && parent::update($sub, $options);
+        });
     }
 
     public function setCreatedAt($value)
@@ -73,7 +79,14 @@ trait InheritsFromSuper
         return $this;
     }
 
-    abstract protected function getSuperClass(): string;
+    protected function superName(): string
+    {
+        return Str::of($this->getSuperClass())
+            ->classBasename()
+            ->snake()
+            ->append('able')
+            ->value();
+    }
 
     private function usesSoftDeletes(): bool
     {
@@ -82,16 +95,16 @@ trait InheritsFromSuper
 
     private function partitionAttributes(array $attributes): array
     {
-        return collect($attributes)
-            ->partition(fn ($_, $attribute) => in_array($attribute, $this->newSuper()->getFillable()))
+        $superAttributes = $this->newSuper()->getFillable();
+
+        return Collection::make($attributes)
+            ->partition(static fn ($_, $attribute) => in_array($attribute, $superAttributes))
             ->toArray();
     }
 
-    private function newSuper()
+    private function newSuper(): Model
     {
-        $super = $this->getSuperClass();
-
-        return new $super();
+        return new ($this->getSuperClass());
     }
 
     public function __call($method, $parameters)
