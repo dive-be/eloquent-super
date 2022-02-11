@@ -39,7 +39,7 @@ composer require dive-be/eloquent-super
 
 #### Migrations
 
-The super model must define a morphs relationship that follows Laravel's naming conventions: the model's singular name in snake case + `able`.
+The super model should define a morphs relationship that follows Laravel's naming conventions: the model's singular name in snake case + `able`.
 
 ```php
 Schema::create('addresses', static function (Blueprint $table) {
