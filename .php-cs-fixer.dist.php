@@ -1,19 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 $finder = Symfony\Component\Finder\Finder::create()
     ->exclude('vendor')
     ->name('*.php')
-    ->in([
-        __DIR__.'/src',
-        __DIR__.'/tests',
-    ])
+    ->in(__DIR__)
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
 
 $dive = [
-    'binary_operator_spaces' => [
-        'operators' => ['|' => null],
-    ],
+    'blank_line_after_opening_tag' => false,
     'blank_line_before_statement' => [
         'statements' => [
             'continue',
@@ -24,13 +19,12 @@ $dive = [
         ],
     ],
     'braces' => false,
+    'concat_space' => ['spacing' => 'one'],
     'constant_case' => ['case' => 'lower'],
+    'declare_strict_types' => true,
     'increment_style' => ['style' => 'post'],
     'is_null' => false,
-    'method_argument_space' => [
-        'on_multiline' => 'ensure_fully_multiline',
-        'keep_multiple_spaces_after_comma' => true,
-    ],
+    'linebreak_after_opening_tag' => false,
     'native_constant_invocation' => false,
     'native_function_invocation' => false,
     'not_operator_with_successor_space' => true,
