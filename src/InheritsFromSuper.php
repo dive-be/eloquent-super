@@ -11,7 +11,7 @@ trait InheritsFromSuper
 {
     abstract protected function getSuperClass(): string;
 
-    protected function initializeInheritsFromSuper()
+    protected function initializeInheritsFromSuper(): void
     {
         $this->with[] = 'super';
     }
@@ -21,18 +21,18 @@ trait InheritsFromSuper
         return $this->morphOne($this->getSuperClass(), $this->superName())->withDefault();
     }
 
-    public function delete()
+    public function delete(): ?bool
     {
         if ($this->usesSoftDeletes()) {
             return parent::delete();
         }
 
-        return $this->getConnection()->transaction(function () {
-            return $this->getRelationValue('super')->delete() && parent::delete();
-        });
+        return $this
+            ->getConnection()
+            ->transaction(fn () => $this->getRelationValue('super')->delete() && parent::delete());
     }
 
-    public function fill(array $attributes)
+    public function fill(array $attributes): static
     {
         [$super, $sub] = $this->partitionAttributes($attributes);
 
@@ -42,7 +42,7 @@ trait InheritsFromSuper
         return $this;
     }
 
-    public function save(array $options = [])
+    public function save(array $options = []): bool
     {
         return $this->getConnection()->transaction(function () use ($options) {
             parent::save($options);
@@ -54,16 +54,16 @@ trait InheritsFromSuper
         });
     }
 
-    public function update(array $attributes = [], array $options = [])
+    public function update(array $attributes = [], array $options = []): bool
     {
         [$super, $sub] = $this->partitionAttributes($attributes);
 
-        return $this->getConnection()->transaction(function () use ($super, $sub, $options) {
-            $this->getRelationValue('super')->update($super, $options) && parent::update($sub, $options);
-        });
+        return $this
+            ->getConnection()
+            ->transaction(fn () => $this->getRelationValue('super')->update($super, $options) && parent::update($sub, $options));
     }
 
-    public function setCreatedAt($value)
+    public function setCreatedAt($value): static
     {
         $this->setAttribute($this->getCreatedAtColumn(), $value);
         $this->getRelationValue('super')->setCreatedAt($value);
@@ -71,7 +71,7 @@ trait InheritsFromSuper
         return $this;
     }
 
-    public function setUpdatedAt($value)
+    public function setUpdatedAt($value): static
     {
         $this->setAttribute($this->getUpdatedAtColumn(), $value);
         $this->getRelationValue('super')->setUpdatedAt($value);
@@ -107,7 +107,7 @@ trait InheritsFromSuper
         return new ($this->getSuperClass());
     }
 
-    public function __call($method, $parameters)
+    public function __call($method, $parameters): mixed
     {
         if (! method_exists($super = $this->getRelationValue('super'), $method)) {
             return parent::__call($method, $parameters);
@@ -116,7 +116,7 @@ trait InheritsFromSuper
         return $super->{$method}(...$parameters);
     }
 
-    public function __get($key)
+    public function __get($key): mixed
     {
         if (! is_null($value = parent::__get($key))) {
             return $value;
@@ -129,7 +129,7 @@ trait InheritsFromSuper
         return $this->getRelationValue('super')->__get($key);
     }
 
-    public function __set($key, $value)
+    public function __set($key, $value): void
     {
         if ($this->newSuper()->isFillable($key)) {
             $this->getRelationValue('super')->__set($key, $value);

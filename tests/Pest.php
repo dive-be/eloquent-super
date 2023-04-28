@@ -1,20 +1,22 @@
 <?php declare(strict_types=1);
 
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Tests\Fakes\SoftModel;
 use Tests\Fakes\SubModel;
 
 uses(Tests\TestCase::class)->in(__DIR__);
 
-function seed()
+function seed(): void
 {
-    resolve('db')->table('test_models_sub')->insert([
+    DB::table('test_models_sub')->insert([
         'gender' => 'm',
         'email' => 'me@email.com',
-        'created_at' => ($now = now()->toDateTimeString()),
+        'created_at' => ($now = Carbon::now()->toDateTimeString()),
         'updated_at' => $now,
     ]);
 
-    resolve('db')->table('test_models_super')->insert([
+    DB::table('test_models_super')->insert([
         'super_modelable_type' => SubModel::class,
         'super_modelable_id' => 1,
         'first_name' => 'John',
@@ -24,16 +26,16 @@ function seed()
     ]);
 }
 
-function seedSoftDeletes()
+function seedSoftDeletes(): void
 {
-    resolve('db')->table('test_models_soft')->insert([
+    DB::table('test_models_soft')->insert([
         'gender' => 'm',
         'email' => 'me@email.com',
-        'created_at' => ($now = now()->toDateTimeString()),
+        'created_at' => ($now = Carbon::now()->toDateTimeString()),
         'updated_at' => $now,
     ]);
 
-    resolve('db')->table('test_models_super')->insert([
+    DB::table('test_models_super')->insert([
         'super_modelable_type' => SoftModel::class,
         'super_modelable_id' => 1,
         'first_name' => 'John',
