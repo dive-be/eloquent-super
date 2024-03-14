@@ -2,6 +2,18 @@
 
 All notable changes to `eloquent-super` will be documented in this file.
 
+## 1.3.0 - 2024-03-14
+
+### Added
+
+- PHP 8.3 support
+- Laravel 11 support
+
+### Removed
+
+- PHP 8.2 support
+- Laravel 10 support
+
 ## 1.2.0 - 2023-04-28
 
 ### Added
