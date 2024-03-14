@@ -1,22 +1,30 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Fakes\SubModel;
 
-test('super relationship exists', function () {
-    $relationship = (new SubModel())->super();
+final class RelationshipTest extends TestCase
+{
+    #[Test]
+    public function super_relationship_exists(): void
+    {
+        $relationship = (new SubModel())->super();
 
-    expect($relationship)->toBeInstanceOf(MorphOne::class);
-    expect($relationship->getForeignKeyName())->toBe('super_modelable_id');
-    expect($relationship->getMorphType())->toBe('super_modelable_type');
-});
+        $this->assertInstanceOf(MorphOne::class, $relationship);
+        $this->assertSame('super_modelable_id', $relationship->getForeignKeyName());
+        $this->assertSame('super_modelable_type', $relationship->getMorphType());
+    }
 
-test('super relationship is always eager loaded', function () {
-    seed();
+    #[Test]
+    public function super_relationship_is_always_eagerly_loaded(): void
+    {
+        $model = SubModel::query()->first();
 
-    $model = SubModel::query()->first();
-
-    expect($model->relationLoaded('super'))->toBeTrue();
-});
+        $this->assertTrue($model->relationLoaded('super'));
+    }
+}

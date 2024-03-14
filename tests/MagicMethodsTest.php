@@ -1,33 +1,44 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Fakes\SubModel;
 
-test('retrieves attribute from super if exists', function () {
-    seed();
-    $model = SubModel::query()->first();
+final class MagicMethodsTest extends TestCase
+{
+    #[Test]
+    public function retrieves_attribute_from_super_if_exists(): void
+    {
+        $model = SubModel::query()->first();
 
-    $firstName = $model->first_name;
+        $firstName = $model->first_name;
 
-    expect($model->getAttribute('first_name'))->toBeNull();
-    expect($firstName)->toBe($model->super->first_name);
-});
+        $this->assertNull($model->getAttribute('first_name'));
+        $this->assertEquals($model->super->first_name, $firstName);
+    }
 
-test('sets attribute on super if it belongs to the super class', function () {
-    $model = new SubModel();
+    #[Test]
+    public function sets_attribute_on_super_if_it_belongs_to_the_super_class(): void
+    {
+        $model = new SubModel();
 
-    $model->first_name = 'William';
+        $model->first_name = 'William';
 
-    expect($model->getAttribute('first_name'))->toBeNull();
-    expect($model->super->first_name)->toBe('William');
-});
+        $this->assertNull($model->getAttribute('first_name'));
+        $this->assertEquals('William', $model->super->first_name);
+    }
 
-test('calls method on super if exists', function () {
-    $model = new SubModel();
+    #[Test]
+    public function calls_method_on_super_if_exists(): void
+    {
+        $model = new SubModel();
 
-    $result = $model->aRandomMethod();
+        $result = $model->aRandomMethod();
 
-    expect(method_exists($model, 'aRandomMethod'))->toBeFalse();
-    expect($result)->toBe('Lorem');
-});
+        $this->assertFalse(method_exists($model, 'aRandomMethod'));
+        $this->assertEquals('Lorem', $result);
+    }
+}

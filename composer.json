@@ -20,16 +20,15 @@
         }
     ],
     "require": {
-        "php": "~8.2",
-        "illuminate/database": "^10.0",
-        "illuminate/support": "^10.0"
+        "php": "~8.3",
+        "illuminate/database": "^11.0",
+        "illuminate/support": "^11.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.16",
-        "nunomaduro/larastan": "^2.6",
-        "orchestra/testbench":"^8.5",
-        "pestphp/pest": "^2.5",
-        "pestphp/pest-plugin-laravel": "^2.0"
+        "laravel/pint": "^1.0",
+        "larastan/larastan": "^2.0",
+        "orchestra/testbench":"^9.0",
+        "phpunit/phpunit": "^11.0"
     },
     "autoload": {
         "psr-4": {
@@ -44,15 +43,12 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "format": "vendor/bin/pint",
         "larastan": "vendor/bin/phpstan analyse --memory-limit=2G",
-        "format": "vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php --allow-risky=yes",
-        "test": "vendor/bin/pest",
+        "test": "vendor/bin/phpunit",
         "verify": "@composer larastan && composer test"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+        "sort-packages": true
     }
 }

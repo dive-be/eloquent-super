@@ -1,23 +1,33 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Fakes\SubModel;
 
-test('created_at is set for super', function () {
-    $model = new SubModel();
+final class TimestampsTest extends TestCase
+{
+    #[Test]
+    public function created_at_is_set_for_super(): void
+    {
+        $model = new SubModel();
 
-    $model->setCreatedAt($now = now());
+        $model->setCreatedAt($now = now());
 
-    expect($model->created_at)->toEqualWithDelta($now, 1);
-    expect($model->super->created_at)->toEqualWithDelta($now, 1);
-});
+        $this->assertEqualsWithDelta($now, $model->created_at, 1);
+        $this->assertEqualsWithDelta($now, $model->super->created_at, 1);
+    }
 
-test('updated_at is set for super', function () {
-    $model = new SubModel();
+    #[Test]
+    public function updated_at_is_set_for_super(): void
+    {
+        $model = new SubModel();
 
-    $model->setUpdatedAt($now = now());
+        $model->setUpdatedAt($now = now());
 
-    expect($model->updated_at)->toEqualWithDelta($now, 1);
-    expect($model->super->updated_at)->toEqualWithDelta($now, 1);
-});
+        $this->assertEqualsWithDelta($now, $model->updated_at, 1);
+        $this->assertEqualsWithDelta($now, $model->super->updated_at, 1);
+    }
+}
